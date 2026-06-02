@@ -1,75 +1,29 @@
 services:
-  # ── Web-Dashboard ────────────────────────────────────────────────────────────
-    - type: web
-        name: pokeprice-dashboard
-            runtime: python
-                plan: free
-                    buildCommand: pip install -r requirements.txt
-                        startCommand: bash start.sh
-                            healthCheckPath: /api/summary
-
-                                # Persistent Disk: SQLite-Datei ueberlebt Deployments
-                                    # Erfordert mindestens den "Starter"-Plan (kostenpflichtig)
-                                        # disk:
-                                            #   name: pokeprice-data
-                                                #   mountPath: /var/data
-                                                    #   sizeGB: 1
-
-                                                        envVars:
-                                                              - key: RENDER
-                                                                      value: "true"
-                                                                            - key: POKEPRICE_DB
-                                                                                    # Free-Plan: DB liegt im Container (geht bei Redeploy verloren).
-                                                                                            # Starter-Plan: /var/data/pokeprice.db
-                                                                                                    value: pokeprice.db
-                                                                                                          - key: POKEPRICE_DELAY
-                                                                                                                  value: "1.0"
-                                                                                                                  
-                                                                                                                        # Cardmarket — in Render Dashboard als Secret hinterlegen
-                                                                                                                              - key: MKM_APP_TOKEN
-                                                                                                                                      sync: false
-                                                                                                                                            - key: MKM_APP_SECRET
-                                                                                                                                                    sync: false
-                                                                                                                                                          - key: MKM_ACCESS_TOKEN
-                                                                                                                                                                  sync: false
-                                                                                                                                                                        - key: MKM_ACCESS_SECRET
-                                                                                                                                                                                sync: false
-                                                                                                                                                                                
-                                                                                                                                                                                      # eBay — in Render Dashboard als Secret hinterlegen
-                                                                                                                                                                                            - key: EBAY_CLIENT_ID
-                                                                                                                                                                                                    sync: false
-                                                                                                                                                                                                          - key: EBAY_CLIENT_SECRET
-                                                                                                                                                                                                                  sync: false
-                                                                                                                                                                                                                        - key: EBAY_MARKETPLACE_ID
-                                                                                                                                                                                                                                value: EBAY_DE
-                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                  # ── Cron-Job: taeglicher Preis-Check ─────────────────────────────────────────
-                                                                                                                                                                                                                                    # Free-Plan: auskommentiert (plan:free ungueltig fuer cron + DB ephemeral)
-                                                                                                                                                                                                                                      # Starter-Plan: Block einkommentieren + plan auf starter setzen
-                                                                                                                                                                                                                                        #
-                                                                                                                                                                                                                                          # - type: cron
-                                                                                                                                                                                                                                            #   name: pokeprice-daily-check
-                                                                                                                                                                                                                                              #   runtime: python
-                                                                                                                                                                                                                                                #   plan: starter
-                                                                                                                                                                                                                                                  #   buildCommand: pip install -r requirements.txt
-                                                                                                                                                                                                                                                    #   schedule: "0 7 * * *"
-                                                                                                                                                                                                                                                      #   startCommand: python cli.py check-all
-                                                                                                                                                                                                                                                        #   envVars:
-                                                                                                                                                                                                                                                          #     - key: POKEPRICE_DB
-                                                                                                                                                                                                                                                            #       value: /var/data/pokeprice.db
-                                                                                                                                                                                                                                                              #     - key: POKEPRICE_DELAY
-                                                                                                                                                                                                                                                                #       value: "2.0"
-                                                                                                                                                                                                                                                                  #     - key: MKM_APP_TOKEN
-                                                                                                                                                                                                                                                                    #       sync: false
-                                                                                                                                                                                                                                                                      #     - key: MKM_APP_SECRET
-                                                                                                                                                                                                                                                                        #       sync: false
-                                                                                                                                                                                                                                                                          #     - key: MKM_ACCESS_TOKEN
-                                                                                                                                                                                                                                                                            #       sync: false
-                                                                                                                                                                                                                                                                              #     - key: MKM_ACCESS_SECRET
-                                                                                                                                                                                                                                                                                #       sync: false
-                                                                                                                                                                                                                                                                                  #     - key: EBAY_CLIENT_ID
-                                                                                                                                                                                                                                                                                    #       sync: false
-                                                                                                                                                                                                                                                                                      #     - key: EBAY_CLIENT_SECRET
-                                                                                                                                                                                                                                                                                        #       sync: false
-                                                                                                                                                                                                                                                                                          #     - key: EBAY_MARKETPLACE_ID
-                                                                                                                                                                                                                                                                                            #       value: EBAY_DE
+  - type: web
+    name: pokeprice-dashboard
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    healthCheckPath: /api/summary
+    envVars:
+      - key: RENDER
+        value: "true"
+      - key: POKEPRICE_DB
+        value: pokeprice.db
+      - key: POKEPRICE_DELAY
+        value: "1.0"
+      - key: MKM_APP_TOKEN
+        sync: false
+      - key: MKM_APP_SECRET
+        sync: false
+      - key: MKM_ACCESS_TOKEN
+        sync: false
+      - key: MKM_ACCESS_SECRET
+        sync: false
+      - key: EBAY_CLIENT_ID
+        sync: false
+      - key: EBAY_CLIENT_SECRET
+        sync: false
+      - key: EBAY_MARKETPLACE_ID
+        value: EBAY_DE
